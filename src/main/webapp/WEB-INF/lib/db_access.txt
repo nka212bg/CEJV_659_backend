@@ -1,0 +1,5 @@
+db access
+url : 178.128.254.179:3306
+db  : vinyl_shelf
+user: vinyl
+pass: vinyl
