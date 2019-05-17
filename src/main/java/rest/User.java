@@ -1,6 +1,7 @@
 package rest;
 
 import java.sql.SQLException;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -11,7 +12,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import util.DB;
 
 @Path("user")
-@Stateless
+//@Stateless
 public class User {
 
     @Context
@@ -50,19 +51,47 @@ public class User {
             System.out.println("--|_O‿O_|--  empty required in edit_user");
             return;
         }
-        if (user_password != "") {
-            DB.getInstance().setData("UPDATE  users SET  user_name = " + user_name + ",  user_password = "
-                    + user_password + ", user_avata = " + user_avatar + " WHERE  users.user_id = '" + user_id + "'");
+        if (!user_password.equals("")) {
+            DB.getInstance().setData("UPDATE  users SET  user_name = '" + user_name + "',  user_password = '"
+                    + user_password + "', user_avatar = '" + user_avatar + "' WHERE  users.user_id = '" + user_id + "'");
         } else {
-            DB.getInstance().setData("UPDATE  users SET  user_name = " + user_name + ", user_avata = " + user_avatar + " WHERE  users.user_id = '" + user_id + "'");
+            DB.getInstance().setData("UPDATE  users SET  user_name = '" + user_name + "', user_avatar = '" + user_avatar + "' WHERE  users.user_id = '" + user_id + "'");
         }
 
     }
 
     @POST
-    @Path("add_user")
-    //  api/user/add_user
-    public void addUser(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException {
+    @Path("login")
+    //  api/user/login
+    public void login(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException {
+        String user_email = String.valueOf(formInput.getFirst("user_email"));
+        String user_password = String.valueOf(formInput.getFirst("user_password"));
+        System.out.println(" /user_email - " + user_email + " /user_password - " + user_password);
+
+        if (user_email.equals("") || user_password.equals("")) {
+            System.out.println("--|_O‿O_|--  empty required in add_user");
+            return;
+        }
+
+        Map<String, String> rs = DB.getInstance().getDataRoll("SELECT users.user_id, users.user_name FROM users WHERE users.user_email = '"
+                + user_email + "' AND users.user_password = '" + user_password + "'");
+
+        if (rs != null) {
+            request.getSession().setAttribute("user_id", rs.get("user_id"));
+            request.getSession().setAttribute("user_name", rs.get("user_name"));
+            request.getSession().setAttribute("user_email", user_email);
+            System.out.println("--|_O‿O_|-- session id " + request.getSession().getAttribute("user_id"));
+
+        } else {
+            System.out.println("--|_O‿O_|--  wrong user or password");
+        }
+
+    }
+
+    @POST
+    @Path("register")
+    //  api/user/register
+    public void register(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException {
         String user_email = String.valueOf(formInput.getFirst("user_email"));
         String user_name = String.valueOf(formInput.getFirst("user_name"));
         String user_password = String.valueOf(formInput.getFirst("user_password"));
@@ -74,8 +103,23 @@ public class User {
             return;
         }
 
-        DB.getInstance().setData("INSERT INTO users (user_email, user_name, user_password, user_avatar) VALUES ('"
-                + user_email + "', '" + user_name + "', '" + user_password + "', '" + user_avatar + "')");
+        Map<String, String> emailCheck = DB.getInstance().getDataRoll("SELECT users.user_id FROM users WHERE users.user_email = '" + user_email + "'");
+        if (emailCheck == null) {
+            DB.getInstance().setData("INSERT INTO users (user_email, user_name, user_password, user_avatar) VALUES ('"
+                    + user_email + "', '" + user_name + "', '" + user_password + "', '" + user_avatar + "')");
+
+            Map<String, String> rs = DB.getInstance().getDataRoll("SELECT users.user_id FROM users WHERE users.user_email = '" + user_email + "'");
+            if (rs != null) {
+                request.getSession().setAttribute("user_id", rs.get("user_id"));
+                request.getSession().setAttribute("user_name", user_name);
+                request.getSession().setAttribute("user_email", user_email);
+                System.out.println("--|_O‿O_|-- session id " + request.getSession().getAttribute("user_id"));
+
+            }
+
+        } else {
+            System.out.println("--|_O‿O_|--  user already exist");
+        }
 
     }
 
