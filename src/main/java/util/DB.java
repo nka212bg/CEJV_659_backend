@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class DB {
 
-    private static String connPath = "jdbc:mysql://178.128.254.179:3306/vinyl_shelf?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private static String connPath = "jdbc:mysql://178.128.254.179:3306/vinyl_shelf?zeroDateTimeBehavior=convertToNull";
     private static String dbUser = "vinyl";
     private static String dbPassword = "vinyl";
 
