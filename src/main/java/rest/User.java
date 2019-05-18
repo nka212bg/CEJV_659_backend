@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 import javax.ejb.Stateless;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,7 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import util.DB;
-import util.Misc;
 import util.SessionLinker;
 
 @Path("user")
@@ -26,7 +23,6 @@ public class User {
 //
     @Context
     private HttpServletResponse response;
-    private String user_id;
     private SessionLinker session = SessionLinker.getInstance();
 
     @POST
@@ -38,7 +34,7 @@ public class User {
 
     @POST
     @Path("get_user/{session_id}")
-    public String getUser(@PathParam("session_id") int session_id) throws ClassNotFoundException, SQLException {
+    public String getUser(@PathParam("session_id") String session_id) throws ClassNotFoundException, SQLException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         String user_id = session.getAttribute(session_id, "user_id");
         if (user_id == null) {
@@ -49,7 +45,7 @@ public class User {
 
     @POST
     @Path("edit_user/{session_id}")
-    public String editUser(@PathParam("session_id") int session_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+    public String editUser(@PathParam("session_id") String session_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
         String user_id = session.getAttribute(session_id, "user_id");
         String user_name = String.valueOf(formInput.getFirst("user_name"));
         String user_password = String.valueOf(formInput.getFirst("user_password"));
@@ -84,8 +80,11 @@ public class User {
                 + user_email + "' AND users.user_password = '" + user_password + "'");
 
         if (rs != null) {
-            int session_id = SessionLinker.getInstance().setSession();
+            String session_id = session.setSession();
             session.setAttribute(session_id, "user_id", rs.get("user_id"));
+
+            System.out.println("--|_O‿O_|--  " + session.getSessionAll());
+
             return "{\"SessionLinker\":\"" + session_id + "\"}";
         } else {
             return "{\"0\":\"wrong user or email\"}";
@@ -96,7 +95,7 @@ public class User {
     @GET
     @Path("logout/{session_id}")
     public void logout(@PathParam("session_id") String session_id) throws ClassNotFoundException, SQLException, IOException {
-        session.invalidate(Integer.valueOf(session_id));
+        session.invalidate(session_id);
         return;
     }
 
@@ -121,7 +120,7 @@ public class User {
 
             Map<String, String> rs = DB.getInstance().getDataRoll("SELECT users.user_id FROM users WHERE users.user_email = '" + user_email + "'");
             if (rs != null) {
-                int session_id = session.setSession();
+                String session_id = session.setSession();
                 session.setAttribute(session_id, "user_id", rs.get("user_id"));
                 return "{\"SessionLinker\":\"" + session_id + "\"}";
             }
