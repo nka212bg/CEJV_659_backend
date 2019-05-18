@@ -17,7 +17,7 @@ import util.SessionLinker;
 @Path("user")
 @Stateless
 public class User {
-
+ 
 //    @Context
 //    private HttpServletRequest request;
 //
@@ -87,7 +87,7 @@ public class User {
 
             return "{\"SessionLinker\":\"" + session_id + "\"}";
         } else {
-            return "{\"0\":\"wrong user or email\"}";
+            return "{\"0\":\""+user_email+"\"}";
         }
 
     }

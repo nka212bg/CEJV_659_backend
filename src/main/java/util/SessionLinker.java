@@ -9,11 +9,10 @@ public class SessionLinker {
     private static SessionLinker instance;
     private static Map< Integer, HashMap> session;
 
-    public static SessionLinker getInstance() throws InterruptedException {
+    public static SessionLinker getInstance() {
         if (instance == null) {
             instance = new SessionLinker();
-            session = new HashMap<>();
-            sessionCleaner();
+            session = new HashMap();
         }
         return instance;
     }
@@ -89,11 +88,9 @@ public class SessionLinker {
         return session;
     }
 
-    public static void sessionCleaner() throws InterruptedException {
-        while (true) {
-            System.out.println("--|_O‿O_|-- ehooo, spq ");
-            Thread.sleep(1000 * 10);
-        }
+    ///*TODO ------------*/
+    public static void sessionCleaner() {
+       
     }
 
 }
