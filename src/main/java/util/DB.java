@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import static jdk.nashorn.internal.objects.NativeString.trim;
 
 public class DB {
 
@@ -44,7 +45,7 @@ public class DB {
             while (rs.next()) {
                 Map<String, String> row = new HashMap();
                 for (int i = 1; i <= columns; ++i) {
-                    row.put(String.valueOf(md.getColumnLabel(i)), String.valueOf(rs.getObject(i)));
+                    row.put(String.valueOf(md.getColumnLabel(i)), decodeString(String.valueOf(rs.getObject(i))));
                 }
                 list.add(row);
             }
@@ -74,7 +75,7 @@ public class DB {
             Map<String, String> row = new HashMap();
             if (rs.next()) {
                 for (int i = 1; i <= columns; ++i) {
-                    row.put(String.valueOf(md.getColumnLabel(i)), String.valueOf(rs.getObject(i)));
+                    row.put(String.valueOf(md.getColumnLabel(i)), decodeString(String.valueOf(rs.getObject(i))));
                 }
                 conn.close();
                 st.close();
@@ -98,7 +99,7 @@ public class DB {
             List<String> list = new ArrayList();
             while (rs.next()) {
                 for (int i = 1; i <= columns; ++i) {
-                    list.add(String.valueOf(rs.getObject(i)));
+                    list.add(decodeString(String.valueOf(rs.getObject(i))));
                 }
             }
             conn.close();
@@ -169,4 +170,29 @@ public class DB {
         return a + "}";
     }
 
+    public static String validateString(String string) {
+        if (string != null) {
+            return trim(string)
+                    .replace("\"", "&#34;")
+                    .replace("'", "&#39;")
+                    .replace("\\", "&#92;")
+                    .replace("`", "&#96;")
+                    .replace("´", "&#180;")
+                    .replace("\n", " ")
+                    .replace("\r", " ");
+        }
+        return null;
+    }
+
+    public static String decodeString(String string) {
+        if (string != null) {
+            return trim(string)
+                    .replace("&#34;", "\\\"")
+                    .replace("&#39;", "'")
+                    .replace("&#92;", "\\\\")
+                    .replace("&#96;", "`")
+                    .replace("&#180;", "´");
+        }
+        return null;
+    }
 }

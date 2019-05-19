@@ -19,14 +19,15 @@ public class User {
 
 //    @Context
 //    private HttpServletResponse response;
-    
     private SessionLinker session = SessionLinker.getInstance();
 
     @POST
     @Path("get_user/{session_id}")
     public String getUser(@PathParam("session_id") String session_id) throws ClassNotFoundException, SQLException {
 //      response.setHeader("Access-Control-Allow-Origin", "*");
+
         String user_id = session.getAttribute(session_id, "user_id");
+
         if (user_id == null) {
             return null;
         }
@@ -36,10 +37,12 @@ public class User {
     @POST
     @Path("edit_user/{session_id}")
     public String editUser(@PathParam("session_id") String session_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+
         String user_id = session.getAttribute(session_id, "user_id");
-        String user_name = String.valueOf(formInput.getFirst("user_name"));
-        String user_password = String.valueOf(formInput.getFirst("user_password"));
-        String user_avatar = String.valueOf(formInput.getFirst("user_avatar"));
+
+        String user_name = DB.validateString(String.valueOf(formInput.getFirst("user_name")));
+        String user_password = DB.validateString(String.valueOf(formInput.getFirst("user_password")));
+        String user_avatar = DB.validateString(String.valueOf(formInput.getFirst("user_avatar")));
 
         if (user_id == null) {
             return "{\"status\":false,\"message\":\"no user\"}";
@@ -57,6 +60,7 @@ public class User {
     @POST
     @Path("delete/{session_id}")
     public String deleteUser(@PathParam("session_id") String session_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+
         String user_id = session.getAttribute(session_id, "user_id");
 
         if (user_id == null) {
@@ -72,8 +76,10 @@ public class User {
     @Path("login")
     public String login(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
 //      response.setHeader("Access-Control-Allow-Origin", "*");
-        String user_email = String.valueOf(formInput.getFirst("user_email"));
-        String user_password = String.valueOf(formInput.getFirst("user_password"));
+
+        String user_email = DB.validateString(String.valueOf(formInput.getFirst("user_email")));
+        String user_password = DB.validateString(String.valueOf(formInput.getFirst("user_password")));
+
         System.out.println(" /user_email - " + user_email + " /user_password - " + user_password);
 
         if (user_email.equals("") || user_password.equals("")) {
@@ -101,10 +107,12 @@ public class User {
     @Path("register")
     public String register(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
 //      response.setHeader("Access-Control-Allow-Origin", "*");
-        String user_email = String.valueOf(formInput.getFirst("user_email"));
-        String user_name = String.valueOf(formInput.getFirst("user_name"));
-        String user_password = String.valueOf(formInput.getFirst("user_password"));
-        String user_avatar = String.valueOf(formInput.getFirst("user_avatar"));
+
+        String user_email = DB.validateString(String.valueOf(formInput.getFirst("user_email")));
+        String user_name = DB.validateString(String.valueOf(formInput.getFirst("user_name")));
+        String user_password = DB.validateString(String.valueOf(formInput.getFirst("user_password")));
+        String user_avatar = DB.validateString(String.valueOf(formInput.getFirst("user_avatar")));
+
         System.out.println(" /user_email - " + user_email + " /user_name - " + user_name + " /user_password - " + user_password + " /user_avatar - " + user_avatar);
 
         if (user_email.equals("") || user_name.equals("") || user_password.equals("")) {
