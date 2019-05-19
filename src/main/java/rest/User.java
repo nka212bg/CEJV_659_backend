@@ -17,14 +17,15 @@ import util.SessionLinker;
 @Stateless
 public class User {
 
-    @Context
-    private HttpServletResponse response;
+//    @Context
+//    private HttpServletResponse response;
+    
     private SessionLinker session = SessionLinker.getInstance();
 
     @POST
     @Path("get_user/{session_id}")
     public String getUser(@PathParam("session_id") String session_id) throws ClassNotFoundException, SQLException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
+//      response.setHeader("Access-Control-Allow-Origin", "*");
         String user_id = session.getAttribute(session_id, "user_id");
         if (user_id == null) {
             return null;
@@ -70,7 +71,7 @@ public class User {
     @POST
     @Path("login")
     public String login(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
+//      response.setHeader("Access-Control-Allow-Origin", "*");
         String user_email = String.valueOf(formInput.getFirst("user_email"));
         String user_password = String.valueOf(formInput.getFirst("user_password"));
         System.out.println(" /user_email - " + user_email + " /user_password - " + user_password);
@@ -99,7 +100,7 @@ public class User {
     @POST
     @Path("register")
     public String register(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
+//      response.setHeader("Access-Control-Allow-Origin", "*");
         String user_email = String.valueOf(formInput.getFirst("user_email"));
         String user_name = String.valueOf(formInput.getFirst("user_name"));
         String user_password = String.valueOf(formInput.getFirst("user_password"));
