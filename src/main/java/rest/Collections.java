@@ -42,17 +42,11 @@ public class Collections {
     }
 
     @POST
-    @Path("get_collection/{session_id}/{collection_id}")
+    @Path("get_collection/{collection_id}")
     public String getCollection(@PathParam("session_id") String session_id, @PathParam("collection_id") String collection_id) throws ClassNotFoundException, SQLException {
-//      response.setHeader("Access-Control-Allow-Origin", "*");
-
-        String user_id = session.getAttribute(session_id, "user_id");
         collection_id = DB.validateString(collection_id);
 
-        if (user_id == null) {
-            return "{\"status\":false,\"message\":\"no user\"}";
-        }
-        return DB.toJson(DB.getInstance().getDataRoll("SELECT collection_name, collection_genre, collection_cover, collection_note FROM collections WHERE collections.collection_id = '" + collection_id + "' AND collections.user_id ='" + user_id + "'"));
+        return DB.toJson(DB.getInstance().getDataRoll("SELECT collection_name, collection_genre, collection_cover, collection_note FROM collections WHERE collections.collection_id = '" + collection_id + "'"));
     }
 
     @POST
