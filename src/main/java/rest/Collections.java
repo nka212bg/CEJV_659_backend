@@ -3,11 +3,9 @@ package rest;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import util.DB;
 import util.SessionLinker;
@@ -46,7 +44,7 @@ public class Collections {
     public String getCollection(@PathParam("session_id") String session_id, @PathParam("collection_id") String collection_id) throws ClassNotFoundException, SQLException {
         collection_id = DB.validateString(collection_id);
 
-        return DB.toJson(DB.getInstance().getDataRoll("SELECT collection_name, collection_genre, collection_cover, collection_note FROM collections WHERE collections.collection_id = '" + collection_id + "'"));
+        return DB.toJson(DB.getInstance().getDataRoll("SELECT collection_id, collection_name, collection_genre, collection_cover, collection_note FROM collections WHERE collections.collection_id = '" + collection_id + "'"));
     }
 
     @POST

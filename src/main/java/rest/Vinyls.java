@@ -17,10 +17,10 @@ public class Vinyls {
     private SessionLinker session = SessionLinker.getInstance();
 
     @POST
-    @Path("add_vinyl/{collection_id}")
-    public void addVinyl(@PathParam("collection_id") String collection_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+    @Path("add_vinyl")
+    public void addVinyl(MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
 
-        collection_id = DB.validateString(collection_id);
+        String collection_id = DB.validateString(String.valueOf(formInput.getFirst("collection_id")));
         String vinyl_artist_name = DB.validateString(String.valueOf(formInput.getFirst("vinyl_artist_name")));
         String vinyl_album_name = DB.validateString(String.valueOf(formInput.getFirst("vinyl_album_name")));
         String vinyl_album_cover = DB.validateString(String.valueOf(formInput.getFirst("vinyl_album_cover")));
