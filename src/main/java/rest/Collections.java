@@ -94,7 +94,9 @@ public class Collections {
             return "{\"status\":false,\"message\":\"no user\"}";
         }
 
-        DB.getInstance().setData("DELETE FROM collections WHERE collections.collection_id = '" + collection_id + "' AND collections.user_id ='" + user_id + "'");
+//        DB.getInstance().setData("DELETE FROM collections WHERE collections.collection_id = '" + collection_id + "' AND collections.user_id ='" + user_id + "'");
+        DB.getInstance().setData("DELETE FROM collections WHERE collections.collection_id = '" + collection_id + "'");
+        DB.getInstance().setData("DELETE FROM vinyls WHERE vinyls.collection_id = '" + collection_id + "'");
         return "{\"status\":true,\"message\":\"collection deleted\"}";
 
     }

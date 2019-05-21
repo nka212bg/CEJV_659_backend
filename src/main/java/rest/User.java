@@ -67,7 +67,10 @@ public class User {
             return "{\"status\":false,\"message\":\"no user\"}";
         }
 
+        DB.getInstance().setData("DELETE FROM vinyls WHERE vinyls.collection_id = (SELECT collection_id FROM collections WHERE collections.user_id = '" + user_id + "')");
+        DB.getInstance().setData("DELETE FROM collections WHERE collections.user_id = '" + user_id + "'");
         DB.getInstance().setData("DELETE FROM users WHERE users.user_id = '" + user_id + "'");
+
         return "{\"status\":true,\"message\":\"user deleted\"}";
 
     }
