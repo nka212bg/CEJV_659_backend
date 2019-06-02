@@ -3,9 +3,11 @@ package rest;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import util.DB;
 import util.SessionLinker;
@@ -14,11 +16,15 @@ import util.SessionLinker;
 @Stateless
 public class Vinyls {
 
+    @Context
+    private HttpServletResponse response;
+
     private SessionLinker session = SessionLinker.getInstance();
 
     @POST
     @Path("add_vinyl/{collection_id}")
     public void addVinyl(@PathParam("collection_id") String collection_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         collection_id = DB.validateString(collection_id);
         String vinyl_artist_name = DB.validateString(String.valueOf(formInput.getFirst("vinyl_artist_name")));
@@ -35,6 +41,7 @@ public class Vinyls {
     @POST
     @Path("get_vinyl/{vinyl_id}")
     public String getVinyl(@PathParam("vinyl_id") String vinyl_id) throws ClassNotFoundException, SQLException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         vinyl_id = DB.validateString(vinyl_id);
         return DB.toJson(DB.getInstance().getDataRoll("SELECT * FROM vinyls WHERE vinyl_id = '" + vinyl_id + "'"));
@@ -43,6 +50,7 @@ public class Vinyls {
     @POST
     @Path("get_all_vinyls/{collection_id}")
     public String getAllVinyls(@PathParam("collection_id") String collection_id) throws ClassNotFoundException, SQLException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         collection_id = DB.validateString(collection_id);
         return DB.toJson(DB.getInstance().getDataList("SELECT * FROM vinyls WHERE vinyls.collection_id = '" + collection_id + "'"));
@@ -51,6 +59,7 @@ public class Vinyls {
     @POST
     @Path("edit_vinyl/{vinyl_id}")
     public void editVinyl(@PathParam("vinyl_id") String vinyl_id, MultivaluedMap<String, String> formInput) throws ClassNotFoundException, SQLException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         vinyl_id = DB.validateString(vinyl_id);
 
@@ -68,6 +77,7 @@ public class Vinyls {
     @POST
     @Path("delete/{vinyl_id}")
     public void deletCollection(@PathParam("vinyl_id") String vinyl_id) throws ClassNotFoundException, SQLException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         vinyl_id = DB.validateString(vinyl_id);
 
